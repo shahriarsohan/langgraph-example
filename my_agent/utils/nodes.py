@@ -1,6 +1,7 @@
+import os
 from functools import lru_cache
 from langchain_anthropic import ChatAnthropic
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI , AzureChatOpenAI
 from my_agent.utils.tools import tools
 from langgraph.prebuilt import ToolNode
 
@@ -8,9 +9,20 @@ from langgraph.prebuilt import ToolNode
 @lru_cache(maxsize=4)
 def _get_model(model_name: str):
     if model_name == "openai":
-        model = ChatOpenAI(temperature=0, model_name="gpt-4o")
+        model = AzureChatOpenAI(
+            temperature=0,
+            model_name="gpt-4o",
+            api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+            api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+            deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT")
+        )
     elif model_name == "anthropic":
-        model =  ChatAnthropic(temperature=0, model_name="claude-3-sonnet-20240229")
+        model = ChatAnthropic(
+            temperature=0, 
+            model_name="claude-3-sonnet-20240229",
+            anthropic_api_key=os.getenv("ANTHROPIC_API_KEY")
+        )
     else:
         raise ValueError(f"Unsupported model type: {model_name}")
 

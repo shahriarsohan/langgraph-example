@@ -4,6 +4,9 @@ from langgraph.graph import StateGraph, END
 from my_agent.utils.nodes import call_model, should_continue, tool_node
 from my_agent.utils.state import AgentState
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Define the config
 class GraphConfig(TypedDict):
